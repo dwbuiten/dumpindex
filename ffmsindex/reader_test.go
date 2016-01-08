@@ -6,10 +6,23 @@ import (
     "testing"
 )
 
-func TestReadIndex(t *testing.T) {
+func TestReadOldIndex(t *testing.T) {
     data := "eF7tzbEJwlAQxvHvoqhgYaMBN7C1iSQDZACt7R72YvfGsFKwNlM4gFukSB1IYa0+BTUjCP8PDo77" +
             "3XG7wX4lxZFJChXihgu5SSo3fpa6Oi9PnTDvrZN+czv6wk/ri2uum3lVaZaPXkeHTN+YN7Viefxu" +
             "7j/5PLRyG7XWURRFURRFURRFURRFURRFURRFURRFURRFURRFURRFURT9c30AXiHzTA=="
+
+    r := base64.NewDecoder(base64.StdEncoding, bytes.NewBuffer([]byte(data)))
+
+    _, err := ReadIndex(r)
+    if err == nil {
+        t.Errorf("Shouldn't have been able to read this index.")
+    }
+}
+
+func TestReadIndex(t *testing.T) {
+    data := "eF7tzb0JwmAQxvHnYlAhhU0MuIGtjRIHyABa273Yi907hpUBa53CAdzCIrWQwtp8CGpGEP4PHBz3" +
+            "u+P2w8PalAQmk9pq4qKF3DiVi+tSqPPq1Gvm/c18UD5zf/GTx9WVt+2sKDTNRu3RcalvzJs6sSx5" +
+            "N6+ffB7afRd01lEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEU/XOtALph804="
 
     r := base64.NewDecoder(base64.StdEncoding, bytes.NewBuffer([]byte(data)))
 

@@ -11,10 +11,10 @@ import (
 
 // Track types
 const (
-    ffmsindex     = 0x53920873
-    requiredMajor = 2
-    TypeAudio     = 1
-    TypeVideo     = 0
+    ffmsindex    = 0x53920873
+    indexVersion = 1
+    TypeAudio    = 1
+    TypeVideo    = 0
 )
 
 // The FFIndex header. Contains info on what versions of various
@@ -28,6 +28,7 @@ type Header struct {
         Micro uint8
         Bump uint8
     }
+    IndexVersion uint16
     Tracks uint32
     Decoder uint32
     ErrorHandling uint32
@@ -146,8 +147,17 @@ func readHeader(r io.Reader) (*Header, error) {
         return nil, err
     }
 
-    if ret.Version.Major != requiredMajor {
-        return nil, fmt.Errorf("Wrong FFMS major version.")
+    // Nothing before this version had the index version field.
+    if ret.Version.Major <= 2 && ret.Version.Minor <= 22 &&
+       ret.Version.Micro == 0 && ret.Version.Bump < 1 {
+        return nil, fmt.Errorf("FFMS2 version used to create index is too old.")
+    }
+
+    err = read(r, &ret.IndexVersion)
+    if err != nil {
+        return nil, err
+    } else if ret.IndexVersion != indexVersion {
+        return nil, fmt.Errorf("Unsupported index version (%d).", ret.IndexVersion)
     }
 
     err = read(r, &ret.Tracks)

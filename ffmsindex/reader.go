@@ -13,9 +13,27 @@ import (
 const (
     ffmsindex    = 0x53920873
     indexVersion = 1
-    TypeAudio    = 1
-    TypeVideo    = 0
+    TypeAudio    = TrackType(1)
+    TypeVideo    = TrackType(0)
 )
+
+// The type of the track
+type TrackType uint8
+
+func (this TrackType) String() string {
+    switch this {
+    case TypeAudio:
+        return "Audio"
+    case TypeVideo:
+        return "Video"
+    default:
+        return "Unknown"
+    }
+}
+
+func (this TrackType) MarshalJSON() ([]byte, error) {
+    return []byte(fmt.Sprintf("\"%s\"", this)), nil
+}
 
 // The FFIndex header. Contains info on what versions of various
 // libraries the index was generated with, and some other misc ifo
@@ -71,7 +89,7 @@ type Frame struct {
 
 // Contains all info about a particular track, and all of its frames.
 type Track struct {
-    TrackType uint8
+    TrackType TrackType
     TimeBase struct {
         Num int64
         Den int64
@@ -210,7 +228,7 @@ func readHeader(r io.Reader) (*Header, error) {
     return ret, nil
 }
 
-func readFrames(r io.Reader, frames uint64, typ uint8) ([]Frame, error) {
+func readFrames(r io.Reader, frames uint64, typ TrackType) ([]Frame, error) {
     ret := make([]Frame, frames)
 
     oldPTS     := int64(0)

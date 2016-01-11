@@ -259,6 +259,20 @@ func readTrack(r io.Reader) (*Track, error) {
     return ret, nil
 }
 
+func (this *Index) populateVisibleFrames() {
+    for i := uint32(0); i < this.Header.Tracks; i++ {
+        this.Tracks[i].visibleFrames = make([]int, 0, len(this.Tracks[i].Frames))
+
+        index := 0
+        for k, f := range this.Tracks[i].Frames {
+            if !f.Hidden {
+                this.Tracks[i].visibleFrames = append(this.Tracks[i].visibleFrames, k)
+                index++
+            }
+        }
+    }
+}
+
 // Parses the ffindex from the reader, and returns information
 // on all tracks and headers. Unlike FFMS2 itself, it will not
 // fail if the libav* library versions do not match, since it
@@ -285,6 +299,10 @@ func ReadIndex(r io.Reader) (*Index, error) {
             return nil, err
         }
     }
+
+    // Some formats, such as VP8, have invisible frames, which shou;d
+    // not be counted in the publically visible info.
+    ret.populateVisibleFrames()
 
     return ret, nil
 }

@@ -93,6 +93,7 @@ type Track struct {
     UseDTS bool
     HasTS bool
     Frames []Frame
+    visibleFrames []int
 }
 
 // Contains all info from the parsed index.

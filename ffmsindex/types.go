@@ -1,5 +1,5 @@
-// Package ffmsindex provides a native Go library for parsing FFMS2 Major Version 2
-// indexes.
+// Package ffmsindex provides a native Go library for parsing FFMS2 Indexes, for
+// versions post-2.22.0.1.
 package ffmsindex
 
 import (

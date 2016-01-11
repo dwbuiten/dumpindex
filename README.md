@@ -21,6 +21,7 @@ $ dumpindex file.ffindex
             "Micro": 0,
             "Bump": 0
         },
+        "IndexVersion": 1,
         "Tracks": 1,
         "Decoder": 1,
         "ErrorHandling": 0,

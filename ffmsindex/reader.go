@@ -186,12 +186,8 @@ func readFrames(r io.Reader, frames uint64, typ TrackType) ([]Frame, error) {
             }
             ret[i].Hidden = (tmp != 0)
         } else if typ == TypeAudio {
-            err = read(r, &ret[i].SampleStart)
-            if err != nil {
-                return nil, err
-            }
-            ret[i].SampleStart += oldSamp
-            oldSamp             = ret[i].SampleStart
+            ret[i].SampleStart = oldSamp + int64(oldCount)
+            oldSamp            = ret[i].SampleStart
 
             err = read(r, &ret[i].SampleCount)
             if err != nil {

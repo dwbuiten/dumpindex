@@ -243,8 +243,6 @@ func readTrack(r io.Reader) (*Track, error) {
     err = read(r, &frames)
     if err != nil {
         return nil, err
-    } else if frames < 1 {
-        return nil, fmt.Errorf("Invalid number of frames in track.")
     }
 
     ret.Frames, err = readFrames(r, frames, ret.TrackType)

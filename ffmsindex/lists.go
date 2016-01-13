@@ -25,8 +25,8 @@ func (this *Track) GetKeyframes() []uint {
 func (this *Track) GetTimestamps() []int64 {
     ret := make([]int64, len(this.visibleFrames))
 
-    for _, n := range this.visibleFrames {
-        ret = append(ret, this.Frames[n].PTS)
+    for k, n := range this.visibleFrames {
+        ret[k] = this.Frames[n].PTS
     }
 
     return ret

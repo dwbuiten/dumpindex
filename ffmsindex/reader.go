@@ -81,7 +81,7 @@ func readHeader(r io.Reader) (*Header, error) {
 	if err != nil {
 		return nil, err
 	} else if ret.IndexVersion != indexVersion {
-		return nil, fmt.Errorf("nsupported index version (%d)", ret.IndexVersion)
+		return nil, fmt.Errorf("unsupported index version (%d)", ret.IndexVersion)
 	}
 
 	err = read(r, &ret.Tracks)

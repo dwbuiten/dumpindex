@@ -6,16 +6,16 @@ package ffmsindex
 // frames. This function takes those into account when
 // calculating the frame numbers.
 func (this *Track) GetKeyframes() []uint {
-    // frame/24 is an arbitrary number to start allocating for
-    ret := make([]uint, 0, len(this.Frames) / 24)
+	// frame/24 is an arbitrary number to start allocating for
+	ret := make([]uint, 0, len(this.Frames)/24)
 
-    for k, v := range this.visibleFrames {
-        if this.Frames[v].KeyFrame {
-            ret = append(ret, uint(k))
-        }
-    }
+	for k, v := range this.visibleFrames {
+		if this.Frames[v].KeyFrame {
+			ret = append(ret, uint(k))
+		}
+	}
 
-    return ret
+	return ret
 }
 
 // Returns a list of timestamps for visible frames. The number
@@ -23,11 +23,11 @@ func (this *Track) GetKeyframes() []uint {
 // since some codecs, such as VP8, have hidden frames. This
 // function takes those into account.
 func (this *Track) GetTimestamps() []int64 {
-    ret := make([]int64, len(this.visibleFrames))
+	ret := make([]int64, len(this.visibleFrames))
 
-    for k, n := range this.visibleFrames {
-        ret[k] = this.Frames[n].PTS
-    }
+	for k, n := range this.visibleFrames {
+		ret[k] = this.Frames[n].PTS
+	}
 
-    return ret
+	return ret
 }

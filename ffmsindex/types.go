@@ -45,7 +45,6 @@ type Header struct {
 	}
 	IndexVersion  uint16
 	Tracks        uint32
-	Decoder       uint32
 	ErrorHandling uint32
 	AVUtilVersion struct {
 		Major uint8
@@ -74,6 +73,7 @@ type Header struct {
 // Frame contains all info about a particular frame or sample.
 type Frame struct {
 	PTS         int64
+	OriginalPTS int64
 	FilePos     int64
 	SampleStart int64
 	SampleCount uint32

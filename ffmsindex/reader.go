@@ -9,7 +9,7 @@ import (
 
 const (
 	ffmsindex    = 0x53920873
-	indexVersion = 1
+	indexVersion = 4
 )
 
 func read(r io.Reader, dst interface{}) error {
@@ -91,11 +91,6 @@ func readHeader(r io.Reader) (*Header, error) {
 		return nil, fmt.Errorf("invlaid number of tracks")
 	}
 
-	err = read(r, &ret.Decoder)
-	if err != nil {
-		return nil, err
-	}
-
 	err = read(r, &ret.ErrorHandling)
 	if err != nil {
 		return nil, err
@@ -140,6 +135,7 @@ func readFrames(r io.Reader, frames uint64, typ TrackType) ([]Frame, error) {
 	ret := make([]Frame, frames)
 
 	oldPTS := int64(0)
+	oldOriginalPTS := int64(0)
 	oldPos := int64(0)
 	oldSamp := int64(0)
 	oldCount := uint32(0)
@@ -152,6 +148,13 @@ func readFrames(r io.Reader, frames uint64, typ TrackType) ([]Frame, error) {
 		}
 		ret[i].PTS += oldPTS
 		oldPTS = ret[i].PTS
+
+		err = read(r, &ret[i].OriginalPTS)
+		if err != nil {
+			return nil, err
+		}
+		ret[i].OriginalPTS += oldOriginalPTS
+		oldOriginalPTS = ret[i].OriginalPTS
 
 		var tmp uint8
 		err = read(r, &tmp)
@@ -167,6 +170,12 @@ func readFrames(r io.Reader, frames uint64, typ TrackType) ([]Frame, error) {
 		ret[i].FilePos += oldPos
 		oldPos = ret[i].FilePos
 
+		err = read(r, &tmp)
+		if err != nil {
+			return nil, err
+		}
+		ret[i].Hidden = (tmp != 0)
+
 		if typ == TypeVideo {
 			err = read(r, &ret[i].OriginalPos)
 			if err != nil {
@@ -179,12 +188,6 @@ func readFrames(r io.Reader, frames uint64, typ TrackType) ([]Frame, error) {
 			if err != nil {
 				return nil, err
 			}
-
-			err = read(r, &tmp)
-			if err != nil {
-				return nil, err
-			}
-			ret[i].Hidden = (tmp != 0)
 		} else if typ == TypeAudio {
 			ret[i].SampleStart = oldSamp + int64(oldCount)
 			oldSamp = ret[i].SampleStart

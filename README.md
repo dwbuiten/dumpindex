@@ -6,6 +6,11 @@ A small package/tool for parsing FFMS2 Version 2 indexes for informational purpo
 
 See: http://godoc.org/github.com/dwbuiten/dumpindex/ffmsindex
 
+# ffindex Versions
+
+Each supported ffindex version is tagged in the git repository as `vN`, where `N` is the
+ffindex version. For example: `v1` or `v4`.
+
 # Tool
 
 This dumpindex tool can be used to dump a given ffindex file to human-readable JSON, via:

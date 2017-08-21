@@ -172,7 +172,7 @@ func readFrames(r io.Reader, frames uint64, typ TrackType) ([]Frame, error) {
 			if err != nil {
 				return nil, err
 			}
-			ret[i].OriginalPos += oldOrigPos
+			ret[i].OriginalPos += oldOrigPos + 1
 			oldOrigPos = ret[i].OriginalPos
 
 			err = read(r, &ret[i].RepeatPict)

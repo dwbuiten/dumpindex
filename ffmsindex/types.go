@@ -12,11 +12,11 @@ const (
 	TypeVideo = TrackType(0)
 )
 
-// The type of the track
+// TrackType is the type of the track
 type TrackType uint8
 
-func (this TrackType) String() string {
-	switch this {
+func (t TrackType) String() string {
+	switch t {
 	case TypeAudio:
 		return "Audio"
 	case TypeVideo:
@@ -26,13 +26,15 @@ func (this TrackType) String() string {
 	}
 }
 
-func (this TrackType) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("\"%s\"", this)), nil
+// MarshalJSON is a standard implementation of JSON marshalling for
+// the TrackType type.
+func (t TrackType) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("\"%s\"", t)), nil
 }
 
-// The FFIndex header. Contains info on what versions of various
-// libraries the index was generated with, and some other misc ifo
-// about how it was generated.
+// Header is the FFIndex header. It contains info on what versions of
+// various libraries the index was generated with, and some other misc
+// info about how it was generated.
 type Header struct {
 	ID      uint32
 	Version struct {
@@ -69,7 +71,7 @@ type Header struct {
 	Digest   [20]byte
 }
 
-// Contains all info about a particular frame or sample.
+// Frame contains all info about a particular frame or sample.
 type Frame struct {
 	PTS         int64
 	FilePos     int64
@@ -82,7 +84,7 @@ type Frame struct {
 	Hidden      bool
 }
 
-// Contains all info about a particular track, and all of its frames.
+// Track contains all info about a particular track, and all of its frames.
 type Track struct {
 	TrackType TrackType
 	TimeBase  struct {
@@ -96,7 +98,7 @@ type Track struct {
 	visibleFrames []int
 }
 
-// Contains all info from the parsed index.
+// Index contains all info from the parsed index.
 type Index struct {
 	Header *Header
 	Tracks []*Track

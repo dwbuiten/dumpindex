@@ -48,7 +48,7 @@ func readHeader(r io.Reader) (*Header, error) {
 	if err != nil {
 		return nil, err
 	} else if ret.ID != ffmsindex {
-		return nil, fmt.Errorf("Corrupted FFINDEX.")
+		return nil, fmt.Errorf("corrupted ffindex")
 	}
 
 	err = read(r, &ret.Version.Bump)
@@ -74,21 +74,21 @@ func readHeader(r io.Reader) (*Header, error) {
 	// Nothing before this version had the index version field.
 	if ret.Version.Major <= 2 && ret.Version.Minor <= 22 &&
 		ret.Version.Micro == 0 && ret.Version.Bump < 1 {
-		return nil, fmt.Errorf("FFMS2 version used to create index is too old.")
+		return nil, fmt.Errorf("FFMS2 version used to create index is too old")
 	}
 
 	err = read(r, &ret.IndexVersion)
 	if err != nil {
 		return nil, err
 	} else if ret.IndexVersion != indexVersion {
-		return nil, fmt.Errorf("Unsupported index version (%d).", ret.IndexVersion)
+		return nil, fmt.Errorf("nsupported index version (%d)", ret.IndexVersion)
 	}
 
 	err = read(r, &ret.Tracks)
 	if err != nil {
 		return nil, err
 	} else if ret.Tracks < 1 {
-		return nil, fmt.Errorf("Invlaid number of tracks.")
+		return nil, fmt.Errorf("invlaid number of tracks")
 	}
 
 	err = read(r, &ret.Decoder)
@@ -130,7 +130,7 @@ func readHeader(r io.Reader) (*Header, error) {
 	if err != nil {
 		return nil, err
 	} else if n != len(ret.Digest) {
-		return nil, fmt.Errorf("Digest too short.")
+		return nil, fmt.Errorf("digest too short")
 	}
 
 	return ret, nil
@@ -196,7 +196,7 @@ func readFrames(r io.Reader, frames uint64, typ TrackType) ([]Frame, error) {
 			ret[i].SampleCount += oldCount
 			oldCount = ret[i].SampleCount
 		} else {
-			return nil, fmt.Errorf("Unknown Track Type.")
+			return nil, fmt.Errorf("unknown track type")
 		}
 	}
 
@@ -253,24 +253,24 @@ func readTrack(r io.Reader) (*Track, error) {
 	return ret, nil
 }
 
-func (this *Index) populateVisibleFrames() {
-	for i := uint32(0); i < this.Header.Tracks; i++ {
-		this.Tracks[i].visibleFrames = make([]int, 0, len(this.Tracks[i].Frames))
+func (t *Index) populateVisibleFrames() {
+	for i := uint32(0); i < t.Header.Tracks; i++ {
+		t.Tracks[i].visibleFrames = make([]int, 0, len(t.Tracks[i].Frames))
 
 		index := 0
-		for k, f := range this.Tracks[i].Frames {
+		for k, f := range t.Tracks[i].Frames {
 			if !f.Hidden {
-				this.Tracks[i].visibleFrames = append(this.Tracks[i].visibleFrames, k)
+				t.Tracks[i].visibleFrames = append(t.Tracks[i].visibleFrames, k)
 				index++
 			}
 		}
 	}
 }
 
-// Parses the ffindex from the reader, and returns information
-// on all tracks and headers. Unlike FFMS2 itself, it will not
-// fail if the libav* library versions do not match, since it
-// is intended to extract information only.
+// ReadIndex parses the ffindex from the reader, and returns
+// information on all tracks and headers. Unlike FFMS2 itself,
+// it will not fail if the libav* library versions do not match,
+// since it is intended to extract information only.
 func ReadIndex(r io.Reader) (*Index, error) {
 	ret := new(Index)
 

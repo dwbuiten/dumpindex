@@ -9,7 +9,7 @@ import (
 
 const (
 	ffmsindex    = 0x53920873
-	indexVersion = 4
+	indexVersion = 5
 )
 
 func read(r io.Reader, dst interface{}) error {
@@ -220,6 +220,11 @@ func readTrack(r io.Reader) (*Track, error) {
 	}
 
 	err = read(r, &ret.TimeBase.Den)
+	if err != nil {
+		return nil, err
+	}
+
+	err = read(r, &ret.LastDuration)
 	if err != nil {
 		return nil, err
 	}

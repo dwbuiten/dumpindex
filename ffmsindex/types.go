@@ -91,6 +91,7 @@ type Track struct {
 		Num int64
 		Den int64
 	}
+	LastDuration  int64
 	MaxBFrames    int32
 	UseDTS        bool
 	HasTS         bool

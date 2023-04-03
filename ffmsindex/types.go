@@ -68,6 +68,15 @@ type Header struct {
 	}
 	FileSize int64
 	Digest   [20]byte
+	LAVFOpts []LAVFOption
+}
+
+// LAVFOption is a single key-value pair for a LAVF option.
+type LAVFOption struct {
+	KeyLength   uint32
+	Key         []byte
+	ValueLength uint32
+	Value       []byte
 }
 
 // Frame contains all info about a particular frame or sample.
@@ -95,6 +104,7 @@ type Track struct {
 	MaxBFrames    int32
 	UseDTS        bool
 	HasTS         bool
+	HasDiscontTS  bool
 	Frames        []Frame
 	visibleFrames []int
 }

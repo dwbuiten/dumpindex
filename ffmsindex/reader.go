@@ -136,11 +136,12 @@ func readHeader(r io.Reader) (*Header, error) {
 	ret.LAVFOpts = make([]LAVFOption, lavfOptsLen)
 
 	for i := uint32(0); i < lavfOptsLen; i++ {
-		err = read(r, &ret.LAVFOpts[i].KeyLength)
+		var keyLength, valueLength uint32
+		err = read(r, &keyLength)
 		if err != nil {
 			return nil, err
 		}
-		ret.LAVFOpts[i].Key = make([]byte, ret.LAVFOpts[i].KeyLength)
+		ret.LAVFOpts[i].Key = make([]byte, keyLength)
 		n, err := io.ReadFull(r, ret.LAVFOpts[i].Key)
 		if err != nil {
 			return nil, err
@@ -148,11 +149,11 @@ func readHeader(r io.Reader) (*Header, error) {
 			return nil, fmt.Errorf("lavf option key too short")
 		}
 
-		err = read(r, &ret.LAVFOpts[i].ValueLength)
+		err = read(r, &valueLength)
 		if err != nil {
 			return nil, err
 		}
-		ret.LAVFOpts[i].Value = make([]byte, ret.LAVFOpts[i].ValueLength)
+		ret.LAVFOpts[i].Value = make([]byte, valueLength)
 		n, err = io.ReadFull(r, ret.LAVFOpts[i].Value)
 		if err != nil {
 			return nil, err

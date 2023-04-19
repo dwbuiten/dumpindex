@@ -73,8 +73,8 @@ type Header struct {
 
 // LAVFOption is a single key-value pair for a LAVF option.
 type LAVFOption struct {
-	Key   []byte
-	Value []byte
+	Key   string
+	Value string
 }
 
 // Frame contains all info about a particular frame or sample.

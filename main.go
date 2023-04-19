@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/dwbuiten/dumpindex/v5/ffmsindex"
+	"github.com/dwbuiten/dumpindex/v7/ffmsindex"
 )
 
 func main() {

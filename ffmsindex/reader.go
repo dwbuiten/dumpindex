@@ -9,7 +9,7 @@ import (
 
 const (
 	ffmsindex    = 0x53920873
-	indexVersion = 5
+	indexVersion = 7
 )
 
 func read(r io.Reader, dst interface{}) error {
@@ -126,6 +126,43 @@ func readHeader(r io.Reader) (*Header, error) {
 		return nil, err
 	} else if n != len(ret.Digest) {
 		return nil, fmt.Errorf("digest too short")
+	}
+
+	var lavfOptsLen uint32
+	err = read(r, &lavfOptsLen)
+	if err != nil {
+		return nil, err
+	}
+	ret.LAVFOpts = make([]LAVFOption, lavfOptsLen)
+
+	for i := uint32(0); i < lavfOptsLen; i++ {
+		var keyLength, valueLength uint32
+		var key, value []byte
+		err = read(r, &keyLength)
+		if err != nil {
+			return nil, err
+		}
+		key = make([]byte, keyLength)
+		n, err := io.ReadFull(r, key)
+		if err != nil {
+			return nil, err
+		} else if n != len(key) {
+			return nil, fmt.Errorf("lavf option key too short")
+		}
+		ret.LAVFOpts[i].Key = string(key)
+
+		err = read(r, &valueLength)
+		if err != nil {
+			return nil, err
+		}
+		value = make([]byte, valueLength)
+		n, err = io.ReadFull(r, value)
+		if err != nil {
+			return nil, err
+		} else if n != len(value) {
+			return nil, fmt.Errorf("lavf option value too short")
+		}
+		ret.LAVFOpts[i].Value = string(value)
 	}
 
 	return ret, nil
@@ -246,6 +283,12 @@ func readTrack(r io.Reader) (*Track, error) {
 		return nil, err
 	}
 	ret.HasTS = (tmp != 0)
+
+	err = read(r, &tmp)
+	if err != nil {
+		return nil, err
+	}
+	ret.HasDiscontTS = (tmp != 0)
 
 	var frames uint64
 	err = read(r, &frames)

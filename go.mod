@@ -1,3 +1,3 @@
-module github.com/dwbuiten/dumpindex/v7
+module github.com/dwbuiten/dumpindex/v8
 
-go 1.12
+go 1.22

@@ -79,16 +79,18 @@ type LAVFOption struct {
 
 // Frame contains all info about a particular frame or sample.
 type Frame struct {
-	PTS         int64
-	OriginalPTS int64
-	FilePos     int64
-	SampleStart int64
-	SampleCount uint32
-	OriginalPos uint64
-	FrameType   int
-	RepeatPict  int32
-	KeyFrame    bool
-	Hidden      bool
+	PTS                int64
+	OriginalPTS        int64
+	FilePos            int64
+	SampleStart        int64
+	SampleCount        uint32
+	OriginalPos        uint64
+	PosInDecodingOrder uint64
+	FrameType          int
+	RepeatPict         int32
+	SecondField        bool
+	KeyFrame           bool
+	MarkedHidden       bool
 }
 
 // Track contains all info about a particular track, and all of its frames.

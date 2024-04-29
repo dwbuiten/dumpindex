@@ -21,15 +21,9 @@ func TestReadOldIndex(t *testing.T) {
 }
 
 func TestReadIndex(t *testing.T) {
-	data := "eF6t2L1LW1EYx/ETo00HF5eCdO9apw4lIIpIQZFSi4gU09zeG4KEGPIiIlKKlFqKg2ToUDp0Fh26" +
-		"9R8p/gsO/gEFB5vmRYpk+AznQt7u/d5zzj3P8/ud56T1sLsecrl8IeTC4Einnod0shiyB8WQThTC" +
-		"ZudJ//zx71+Pb37+uVyZf7r6bitcHVxc30z0zk/3Xlm9nNSyUtrMKq1/7czN9N46raxUTlq7tU47" +
-		"KzXK7Wr/SrjKD/qZHfY36nf442sYf+SePRp+u/3vGN1897mxcO++sdQiUTWiGkRZW3WiKkTtEXVA" +
-		"lD3jFlHbRB0S9ZqoKlEWIXvGnYiURegLUctEWY8xlZYQtUqUxbFLlOnRlGbjsow2qk1UzLYsJz4R" +
-		"ZTlhXvieqM9E7RP1jSjzVZv7lKiPRJlj2ky8ikiZHt9EpMyjTdtGnRJl69ALoizaRjWJMqWZOl4S" +
-		"ZZljPZqbmDPZrJ4RlRAVc+WzqsOUZnNvs2qj/0GUua/5hI1+jSgbl+WXqfaIqA9E2Tr0nSgbl1W1" +
-		"RlnFZ3WO1eSmbVsVzL+WiDIHiLm6W9Vh1ZCp1pRmuxMbl9XkVm2b52wSZbtye0br8YQo8y/Le2sr" +
-		"JmUuF9PJLUJGvSXKom01QMy9lbmv/Wdl83VOlCnNom37jiOirNo2jzb3tfwaG8e/cv/jCw=="
+	data := "eF7tzD0OAVEYheEzMxmZUquwArQamUQzrcYW3MwCWAFRSxQ2Yi/WoLABCSExdwri6CXv09y/937L" +
+		"Yj+XlBdK1AjdieqsVJ2XWqSFbuv4Mt6sRp2wrWaX6ylMq2N/cH/dn7PmvRcHtIPi4aDvkmG7e3yI" +
+		"H/W+7lL9QO6QO+QOuUPukDvkDrlD7pA75A65Q+6QO+QOuUPukDvkDrlD7pA75A6588/5E6FMdbM="
 
 	r := base64.NewDecoder(base64.StdEncoding, bytes.NewBuffer([]byte(data)))
 
@@ -55,7 +49,7 @@ func TestReadIndex(t *testing.T) {
 			return
 		}
 
-		if v.Hidden {
+		if v.MarkedHidden {
 			t.Errorf("Frame %d should not be hidden.", i)
 			return
 		}

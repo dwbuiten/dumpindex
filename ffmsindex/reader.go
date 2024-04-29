@@ -9,7 +9,7 @@ import (
 
 const (
 	ffmsindex    = 0x53920873
-	indexVersion = 7
+	indexVersion = 8
 )
 
 func read(r io.Reader, dst interface{}) error {
@@ -177,6 +177,7 @@ func readFrames(r io.Reader, frames uint64, typ TrackType) ([]Frame, error) {
 	oldSamp := int64(0)
 	oldCount := uint32(0)
 	oldOrigPos := uint64(0)
+	oldPosInDecodingOrder := uint64(0)
 
 	for i := uint64(0); i < frames; i++ {
 		err := read(r, &ret[i].PTS)
@@ -211,7 +212,7 @@ func readFrames(r io.Reader, frames uint64, typ TrackType) ([]Frame, error) {
 		if err != nil {
 			return nil, err
 		}
-		ret[i].Hidden = (tmp != 0)
+		ret[i].MarkedHidden = (tmp != 0)
 
 		if typ == TypeVideo {
 			err = read(r, &ret[i].OriginalPos)
@@ -221,10 +222,23 @@ func readFrames(r io.Reader, frames uint64, typ TrackType) ([]Frame, error) {
 			ret[i].OriginalPos += oldOrigPos + 1
 			oldOrigPos = ret[i].OriginalPos
 
+			err = read(r, &ret[i].PosInDecodingOrder)
+			if err != nil {
+				return nil, err
+			}
+			ret[i].PosInDecodingOrder += oldPosInDecodingOrder + 1
+			oldPosInDecodingOrder = ret[i].PosInDecodingOrder
+
 			err = read(r, &ret[i].RepeatPict)
 			if err != nil {
 				return nil, err
 			}
+
+			err = read(r, &tmp)
+			if err != nil {
+				return nil, err
+			}
+			ret[i].SecondField = (tmp != 0)
 		} else if typ == TypeAudio {
 			ret[i].SampleStart = oldSamp + int64(oldCount)
 			oldSamp = ret[i].SampleStart
@@ -310,7 +324,7 @@ func (t *Index) populateVisibleFrames() {
 
 		index := 0
 		for k, f := range t.Tracks[i].Frames {
-			if !f.Hidden {
+			if !f.MarkedHidden {
 				t.Tracks[i].visibleFrames = append(t.Tracks[i].visibleFrames, k)
 				index++
 			}
